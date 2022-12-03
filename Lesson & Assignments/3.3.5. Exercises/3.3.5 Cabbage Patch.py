@@ -13,7 +13,3 @@ def drawCabbages():
     for x in range(5):
         for y in range(5):
             drawCabbage(100*y,100*x)
-
-##### Place your code above this line, code below is for testing purposes #####
-# test case:
-drawCabbages()
