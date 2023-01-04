@@ -1,0 +1,223 @@
+---------------------------------------THE COUNT
+app.background = rgb(30, 60, 150)
+
+# moon
+Circle(300, 100, 60, fill='white')
+Circle(290, 90, 60, fill=rgb(30, 60, 150))
+
+# tree
+Line(0, 110, 100, 100, fill=rgb(60, 20, 10), lineWidth=10)
+Line(100, 100, 170, 125, fill=rgb(60, 20, 10), lineWidth=6)
+Line(100, 98, 185, 80, fill=rgb(60, 20, 10), lineWidth=7)
+Line(185, 80, 205, 50, fill=rgb(60, 20, 10), lineWidth=3)
+Line(185, 80, 220, 100, fill=rgb(60, 20, 10), lineWidth=3)
+Line(170, 125, 195, 115, fill=rgb(60, 20, 10), lineWidth=3)
+Line(170, 125, 180, 140, fill=rgb(60, 20, 10), lineWidth=3)
+
+# bat body
+Polygon(100, 190, 50, 215, 150, 215, fill='crimson')
+Polygon(100, 100, 135, 190, 100, 230, 65, 190)
+Polygon(90, 205, 110, 205, 100, 170, fill='white')
+Polygon(90, 190, 90, 200, 110, 190, 110, 200, fill='crimson')
+Circle(100, 195, 3, fill='crimson')
+
+# bat head
+Polygon(100, 220, 60, 255, 140, 255, fill='pink', border=rgb(20, 20, 20))
+Circle(100, 230, 28, fill=rgb(20, 20, 20))
+Circle(95, 245, 2, fill='white')
+Circle(105, 245, 2, fill='white')
+Oval(100, 225, 25, 10, fill='white')
+Polygon(94, 222, 96, 215, 98, 222, fill='white')
+Polygon(106, 222, 104, 215, 102, 222, fill='white')
+Circle(95, 247, 2, fill=rgb(20, 20, 20))
+Circle(105, 247, 2, fill=rgb(20, 20, 20))
+Oval(100, 227, 25, 10, fill=rgb(20, 20, 20))
+
+# thought bubble
+Circle(135, 270, 4, fill='white')
+Circle(150, 285, 8, fill='white')
+Circle(180, 295, 10, fill='white')
+Circle(240, 315, 45, fill='white', border='gainsboro', borderWidth=3)
+Circle(290, 290, 35, fill='white', border='gainsboro', borderWidth=3)
+Circle(330, 320, 40, fill='white', border='gainsboro', borderWidth=3)
+Circle(280, 335, 40, fill='white', border='gainsboro', borderWidth=3)
+Rect(225, 285, 100, 65, fill='white')
+
+Label('The Count counts...', 285, 310, font='monospace')
+text = Label('(click the screen)', 285, 330, font='monospace')
+
+def onMousePress(mouseX, mouseY):
+    vowels = 'aeiouAEIOU'
+    vowelsNum = 0
+    message = app.getTextInput()
+    
+    for i in range(len(message)):
+        if message[i] in vowels:
+            print("hi")
+            vowelsNum += 1
+            
+    print(vowelsNum)
+    text.value = str(vowelsNum) + ' vowels!'
+---------------------------------------WACK A BUG
+import random
+
+app.stepsPerSecond = 2
+app.bugs = [ ]
+
+# background
+Rect(0, 0, 400, 150, fill=gradient('cornSilk', 'ghostWhite', start='top'))
+Rect(0, 150, 400, 250, fill=gradient('peru', 'saddleBrown', start='top'))
+
+Label('You have whacked', 150, 60, fill='saddleBrown', size=20, bold=True)
+score = Label(0, 255, 60, fill='saddleBrown', size=20, bold=True)
+Label('bugs!', 300, 60, fill='saddleBrown', size=20, bold=True)
+
+def drawBug(x, y):
+    Oval(x, y, 100, 40,
+         fill=gradient('saddleBrown', rgb(120, 15, 10), start='top'))
+
+    bugColor = gradient('greenYellow', rgb(135, 170, 65), start='right')
+    bug = Group(
+        Rect(x, y, 30, 60, fill=bugColor, align='bottom'),
+        Circle(x, y - 60, 15, fill=bugColor),
+        Label('O o', x, y - 70, bold=True),
+        Label('_', x, y - 65, bold=True),
+        Line(x, y, x, y - 60, fill='oliveDrab', lineWidth=30, dashes=(2, 12))
+        )
+    # Hide the bug and add it to our list of bugs.
+    ### Place Your Code Here ###
+
+    app.bugs.append(bug)
+    bug.visible = False 
+
+def drawBugs():
+    # Creates all of the bugs at once.
+    bugXCoords = [ 75, 200, 325, 135, 260, 200 ]
+    bugYCoords = [ 220, 220, 220, 300, 300, 380 ]
+    for index in range(len(bugXCoords)):
+        x = bugXCoords[index]
+        y = bugYCoords[index]
+        drawBug(x, y)
+
+drawBugs()
+
+# hammer
+hammer = Group(
+    Rect(185, 100, 50, 40, fill='salmon'),
+    Oval(185, 120, 20, 40, fill='salmon'),
+    Oval(235, 120, 20, 40, fill=rgb(195, 80, 80)),
+    Rect(204, 140, 12, 50, fill=gradient('peru', 'burlyWood', start='left'))
+    )
+hammer.rotateAngle = 35
+
+def checkGameOver():
+    # Checks the number of bugs that are up.
+    upCount = 0
+    for bug in app.bugs:
+        if (bug.visible == True):
+            upCount += 1
+    # If all the bugs are up, the game is over.
+    if (upCount == len(app.bugs)):
+        Rect(50, 185, 300, 100, fill=gradient('maroon', 'crimson'),
+             border='white')
+        Label('Game Over', 200, 235, fill='white', size=50, font='monospace',
+              bold=True)
+        app.stop()
+
+def onMousePress(mouseX, mouseY):
+    # Rotates the hammer.
+    hammer.rotateAngle = 90
+
+    # Checks if any bug is hit by the hammer.
+    for bug in app.bugs:
+        if ((bug.visible == True) and (bug.hitsShape(hammer) == True)):
+            bug.visible = False
+            score.value += 1
+
+def onMouseRelease(mouseX, mouseY):
+    # Returns the hammer to the original rotateAngle.
+    hammer.rotateAngle = 35
+
+def onMouseMove(mouseX, mouseY):
+    hammer.centerX = mouseX
+    hammer.centerY = mouseY
+
+def onStep():
+    randomBug = random.choice(app.bugs)
+    randomBug.visible = True
+    # Choose a random bug from the list to turn visible.
+    ### Place Your Code Here ###
+
+    checkGameOver()
+ ---------------------------------------SNAKE SPEECH
+ app.background = 'peru'
+
+# snake
+Oval(130, 350, 500, 350, fill=None, border='lightGreen', borderWidth=45)
+Oval(25, 200, 400, 200, fill='peru')
+Polygon(80, 205, 85, 210, 80, 215, 130, 215, 130, 205, fill='crimson')
+Oval(185, 210, 120, 90, fill='lightGreen')
+Circle(160, 190, 5)
+Circle(160, 230, 5)
+
+# speech bubble
+Polygon(70, 110, 120, 110, 130, 160, fill='white')
+Oval(200, 70, 400, 120, fill='white')
+
+snakeText = Label('', 200, 70, size=20)
+
+def makeSnakeSpeech():
+    # Transforms the inputted text into snake speech.
+    text = app.getTextInput('What should the snake say?')
+    textlist = []
+    for i in range(len(text)):
+        if text[i] == 's':
+            textlist.insert(i,'sssss')
+            print("hi")
+        else:
+            textlist.insert(i,text[i])
+    snakeText.value = ''
+    for i in range(len(textlist)):
+        snakeText.value = snakeText.value + textlist[i]
+    
+    # Create a new string that is the same as the string the user inputs, but
+    # with every 's' replaced with 'sssss'.
+    ### Place Your Code Here ###
+
+def onMousePress(mouseX, mouseY):
+    makeSnakeSpeech()
+---------------------------------------LAVA LAMP
+app.background = gradient('yellow', 'crimson', start='top')
+app.stepsPerSecond = 20
+
+
+# window
+Line(200, 0, 200, 400, lineWidth=4)
+Line(0, 200, 400, 200, lineWidth=4)
+Rect(0, 0, 400, 400, fill=None, border='black', borderWidth=10)
+
+# table
+Rect(100, 375, 200, 10)
+Rect(100, 385, 10, 15)
+Rect(290, 385, 10, 15)
+
+# Initialize empty blob group.
+blobs = []
+
+def createBlobs():
+    newBlobRadius = 5
+    newBlobX = 160
+    newBlobSpeed = 6
+
+    # Creates 6 blobs that increase in size and decrease in speed.
+    for i in range(6):
+        blob = Circle(newBlobX, 200, newBlobRadius, fill='red', opacity=90)
+        blob.dy = newBlobSpeed
+        blobs.insert(0,blob)
+
+        newBlobRadius += 5
+        newBlobX += 10
+        newBlobSpeed -= 1
+
+# Populates the blob group.
+createBlobs()
