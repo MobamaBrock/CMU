@@ -44,13 +44,3 @@ def onMousePress(mouseX, mouseY):
         
     # See if any checkboxes were marked.
     tryCheckingBox(mouseX, mouseY)
-
-##### Place your code above this line, code below is for testing purposes #####
-# test case:
-app.setTextInputs('Do homework', 'Cook food', 'Write essay', 'Code')
-onMousePress(300, 280)
-onMousePress(300, 280)
-onMousePress(300, 280)
-onMousePress(300, 280)
-onMousePress(275, 110)
-onMousePress(275, 150)
